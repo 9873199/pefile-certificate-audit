@@ -102,6 +102,19 @@ MAX_RESOURCE_DEPTH = 32
 # Limit number of exported symbols
 MAX_SYMBOL_EXPORT_COUNT = 0x2000
 
+# The WIN_CERTIFICATE header is dwLength (DWORD) + wRevision (WORD)
+# + wCertificateType (WORD), 8 bytes in total.
+WIN_CERTIFICATE_HEADER_SIZE = 0x8
+
+# WIN_CERTIFICATE entries are aligned to 8-byte boundaries within the
+# security directory.
+WIN_CERTIFICATE_ALIGNMENT = 0x8
+
+# Upper bound on how many WIN_CERTIFICATE entries the lenient forensic
+# parser will walk. The walk always makes forward progress, but this cap
+# guarantees termination on hostile files declaring endless entries.
+MAX_CERTIFICATE_ENTRIES = 0x400
+
 MIN_VALID_FILE_ALIGNMENT = 0x200
 SECTOR_SIZE = 0x200
 
@@ -266,6 +279,48 @@ subsystem_types = [
 ]
 
 SUBSYSTEM_TYPE = two_way_dict(subsystem_types)
+
+
+# Values of the WIN_CERTIFICATE.wRevision field.
+# https://learn.microsoft.com/en-us/windows/win32/debug/pe-format#certificate-table-entry
+win_certificate_revisions = [
+    ("WIN_CERT_REVISION_1_0", 0x0100),
+    ("WIN_CERT_REVISION_2_0", 0x0200),
+]
+
+WIN_CERTIFICATE_REVISION = two_way_dict(win_certificate_revisions)
+
+# Values of the WIN_CERTIFICATE.wCertificateType field.
+win_certificate_types = [
+    ("WIN_CERT_TYPE_X509", 0x0001),
+    ("WIN_CERT_TYPE_PKCS_SIGNED_DATA", 0x0002),
+    ("WIN_CERT_TYPE_RESERVED_1", 0x0003),
+    ("WIN_CERT_TYPE_TS_STACK_SIGNED", 0x0004),
+    ("WIN_CERT_TYPE_EFI_PKCS115", 0x0EF0),
+    ("WIN_CERT_TYPE_EFI_GUID", 0x0EF1),
+]
+
+WIN_CERTIFICATE_TYPE = two_way_dict(win_certificate_types)
+
+# Machine readable codes for the structural anomalies detected while
+# auditing the security (certificate) table. They are intentionally
+# granular so that forensic tooling can branch on exact failure modes.
+SECURITY_ANOMALY_HEADER_TRUNCATED = "header_truncated"
+SECURITY_ANOMALY_LENGTH_TOO_SMALL = "length_less_than_header"
+SECURITY_ANOMALY_RECORD_TRUNCATED = "record_truncated"
+SECURITY_ANOMALY_DIRENT_BEYOND_EOF = "directory_beyond_file"
+SECURITY_ANOMALY_DIRENT_SIZE_BEYOND_EOF = "directory_size_beyond_file"
+SECURITY_ANOMALY_IN_SECTION_DATA = "record_in_section_raw_data"
+SECURITY_ANOMALY_DIRENT_IN_HEADERS = "directory_in_headers"
+SECURITY_ANOMALY_DIRENT_SIZE_MISMATCH = "directory_size_mismatch"
+SECURITY_ANOMALY_DIRENT_ZERO_OFFSET = "directory_zero_offset"
+SECURITY_ANOMALY_OVERLAPPING_RECORD = "overlapping_records"
+SECURITY_ANOMALY_MISALIGNED_RECORD = "misaligned_record"
+SECURITY_ANOMALY_UNKNOWN_REVISION = "unknown_revision"
+SECURITY_ANOMALY_UNKNOWN_TYPE = "unknown_certificate_type"
+SECURITY_ANOMALY_TRAILING_GARBAGE = "trailing_garbage"
+SECURITY_ANOMALY_TOO_MANY_ENTRIES = "too_many_entries"
+SECURITY_ANOMALY_DIRENT_SIZE_TOO_SMALL = "directory_size_less_than_header"
 
 
 machine_types = [
@@ -818,6 +873,223 @@ class PEFormatError(Exception):
 
     def __str__(self):
         return repr(self.value)
+
+
+class SecurityDirectoryError(PEFormatError):
+    """Raised by the strict security directory parser on structural errors.
+
+    The partial audit is attached so callers can still inspect whatever was
+    parsed before the fatal anomaly, including exact file offsets.
+    """
+
+    def __init__(self, value, security_directory=None, anomaly=None):
+        super().__init__(value)
+        self.security_directory = security_directory
+        self.anomaly = anomaly
+
+
+class SecurityAnomaly:
+    """A single structural anomaly located in the security (certificate) table.
+
+    Attributes:
+        code: machine-readable identifier, one of the ``SECURITY_ANOMALY_*``
+            constants.
+        message: human readable description of the anomaly.
+        offset: file offset where the anomaly was detected, or ``None`` when
+            it does not apply to a specific location.
+        record_index: zero-based index of the offending WIN_CERTIFICATE record,
+            or ``None`` when the anomaly is not tied to one record.
+    """
+
+    __slots__ = ("code", "message", "offset", "record_index")
+
+    def __init__(self, code, message, offset=None, record_index=None):
+        self.code = code
+        self.message = message
+        self.offset = offset
+        self.record_index = record_index
+
+    def __repr__(self):
+        loc = []
+        if self.record_index is not None:
+            loc.append(f"record {self.record_index}")
+        if self.offset is not None:
+            loc.append(f"offset {self.offset:#x}")
+        location = f" ({', '.join(loc)})" if loc else ""
+        return f"<SecurityAnomaly: {self.code}{location}: {self.message}>"
+
+    def __eq__(self, other):
+        if not isinstance(other, SecurityAnomaly):
+            return NotImplemented
+        return (
+            self.code == other.code
+            and self.message == other.message
+            and self.offset == other.offset
+            and self.record_index == other.record_index
+        )
+
+
+class WinCertificateEntry:
+    """One WIN_CERTIFICATE record as laid out in the security directory.
+
+    The file offsets are absolute offsets into the PE file, not RVAs: the
+    IMAGE_DIRECTORY_ENTRY_SECURITY directory is the only data directory whose
+    VirtualAddress field is a raw file offset.
+
+    Attributes:
+        index: zero-based position of the record within the table.
+        file_offset: absolute file offset of the record's start (the
+            WIN_CERTIFICATE header).
+        dwLength: declared length of the whole record including the 8 byte
+            header, as found in the file.
+        wRevision: certificate revision value (see WIN_CERTIFICATE_REVISION).
+        wCertificateType: certificate type value (see WIN_CERTIFICATE_TYPE).
+        struct: parsed WIN_CERTIFICATE header Structure, or None if the header
+            itself could not be read.
+        data_offset: absolute file offset of the bCertificate payload.
+        data: bytes of the bCertificate payload, or None when the declared
+            length extends beyond the file.
+        end_offset: file offset just past the record's declared extent
+            (file_offset + dwLength).
+        aligned_end_offset: end_offset rounded up to the 8 byte boundary,
+            i.e. where the next record is expected.
+        anomalies: list of SecurityAnomaly instances specific to this record.
+    """
+
+    __slots__ = (
+        "index",
+        "file_offset",
+        "dwLength",
+        "wRevision",
+        "wCertificateType",
+        "struct",
+        "data_offset",
+        "data",
+        "end_offset",
+        "aligned_end_offset",
+        "anomalies",
+    )
+
+    def __init__(self, index, file_offset):
+        self.index = index
+        self.file_offset = file_offset
+        self.dwLength = None
+        self.wRevision = None
+        self.wCertificateType = None
+        self.struct = None
+        self.data_offset = file_offset + WIN_CERTIFICATE_HEADER_SIZE
+        self.data = None
+        self.end_offset = None
+        self.aligned_end_offset = None
+        self.anomalies = []
+
+    @property
+    def revision_name(self):
+        """Name of the revision value, or None for unknown revisions."""
+        return WIN_CERTIFICATE_REVISION.get(self.wRevision)
+
+    @property
+    def certificate_type_name(self):
+        """Name of the certificate type, or None for unknown types."""
+        return WIN_CERTIFICATE_TYPE.get(self.wCertificateType)
+
+    def __repr__(self):
+        return (
+            f"<WinCertificateEntry #{self.index} at {self.file_offset:#x} "
+            f"dwLength={self.dwLength} revision={self.wRevision:#x} "
+            f"type={self.wCertificateType:#x} "
+            f"anomalies={len(self.anomalies)}>"
+        )
+
+
+class SecurityDirectory:
+    """Audit result for the IMAGE_DIRECTORY_ENTRY_SECURITY directory.
+
+    The audit is purely structural: no signature verification, certificate
+    chain validation or network access is performed. A table without
+    structural anomalies only means the records are readable, not that the
+    embedded signature is authentic.
+
+    Attributes:
+        present: True when the data directory entry exists (it may still be
+            zeroed out, see ``declared``).
+        declared: True when the directory entry declares a non zero file
+            offset and/or size.
+        directory_offset: raw file offset from the directory entry, or None.
+        directory_size: declared size from the directory entry, or None.
+        entries: list of WinCertificateEntry records, in file order.
+        anomalies: list of SecurityAnomaly instances spanning the whole table.
+        strict: True when produced by the strict parser.
+        valid_structure: True when no anomalies of any kind were found. This
+            never implies the signature itself is valid.
+        table_start_offset: first byte claimed by the table (file offset).
+        table_end_offset: first byte after the table, honoring the declared
+            directory size while ignoring overlay data past the records.
+    """
+
+    __slots__ = (
+        "present",
+        "declared",
+        "directory_offset",
+        "directory_size",
+        "entries",
+        "anomalies",
+        "strict",
+        "valid_structure",
+        "table_start_offset",
+        "table_end_offset",
+    )
+
+    def __init__(self, present=False, strict=True):
+        self.present = present
+        self.declared = False
+        self.directory_offset = None
+        self.directory_size = None
+        self.entries = []
+        self.anomalies = []
+        self.strict = strict
+        self.valid_structure = False
+        self.table_start_offset = None
+        self.table_end_offset = None
+
+    def all_anomalies(self):
+        """Return table-level anomalies followed by per-record anomalies."""
+        result = list(self.anomalies)
+        for entry in self.entries:
+            result.extend(entry.anomalies)
+        return result
+
+    @property
+    def status(self):
+        """Coarse classification of the table, one of:
+
+        - ``"absent"``: no security directory entry exists;
+        - ``"empty"``: the entry exists but is zeroed (image not signed);
+        - ``"malformed"``: a table is declared but structural anomalies were
+          found;
+        - ``"readable_unverified"``: the records are structurally readable but
+          the signature authenticity was not, and cannot be, verified here.
+        """
+
+        if not self.present:
+            return "absent"
+        if not self.declared:
+            return "empty"
+        if self.all_anomalies():
+            return "malformed"
+        return "readable_unverified"
+
+    def __repr__(self):
+        state = "not present"
+        if self.declared:
+            state = (
+                f"{'valid' if self.valid_structure else 'malformed'} "
+                f"({len(self.entries)} entries, "
+                f"{len(self.all_anomalies())} anomalies)"
+            )
+        elif self.present:
+            state = "empty directory entry"
+        return f"<SecurityDirectory: {state}, strict={self.strict}>"
 
 
 class Dump:
@@ -2546,6 +2818,15 @@ class PE:
     __IMAGE_DATA_DIRECTORY_format__ = (
         "IMAGE_DATA_DIRECTORY",
         ("I,VirtualAddress", "I,Size"),
+    )
+
+    __WIN_CERTIFICATE_format__ = (
+        "WIN_CERTIFICATE",
+        (
+            "I,dwLength",
+            "H,wRevision",
+            "H,wCertificateType",
+        ),
     )
 
     __IMAGE_SECTION_HEADER_format__ = (
@@ -6962,6 +7243,30 @@ class PE:
                 if hasattr(rf, "unwindinfo") and rf.unwindinfo is not None:
                     dump.add_lines(rf.unwindinfo.dump(), 4)
 
+        security = getattr(self, "_PE__security_directory_lenient__", None)
+        if security is None:
+            security = getattr(self, "_PE__security_directory_strict__", None)
+        if security is not None and security.declared:
+            dump.add_header("Security directory (structural audit)")
+            dump.add_line(f"Status: {security.status}")
+            dump.add_line(
+                f"File offset: {security.directory_offset:#x} "
+                f"Size: {security.directory_size:#x}"
+            )
+            for entry in security.entries:
+                dump.add_line(
+                    f"  WIN_CERTIFICATE #{entry.index} "
+                    f"[{entry.file_offset:#x}, {entry.end_offset:#x}) "
+                    f"dwLength {entry.dwLength} "
+                    f"revision {entry.revision_name or hex(entry.wRevision)} "
+                    f"type {entry.certificate_type_name or hex(entry.wCertificateType)}"
+                )
+                for anomaly in entry.anomalies:
+                    dump.add_line(f"    ! {anomaly.code}: {anomaly.message}")
+            for anomaly in security.anomalies:
+                dump.add_line(f"  ! {anomaly.code}: {anomaly.message}")
+            dump.add_newline()
+
         return dump.get_text()
 
     def dump_dict(self):
@@ -7853,6 +8158,531 @@ class PE:
             )
         )
 
+    def _security_directory_entry(self):
+        """Return the IMAGE_DIRECTORY_ENTRY_SECURITY data directory entry.
+
+        Returns None when the optional header does not contain that many
+        data directory entries.
+        """
+
+        security_index = DIRECTORY_ENTRY["IMAGE_DIRECTORY_ENTRY_SECURITY"]
+        try:
+            return self.OPTIONAL_HEADER.DATA_DIRECTORY[security_index]
+        except IndexError:
+            return None
+
+    @staticmethod
+    def _intervals_intersect(start_a, end_a, start_b, end_b):
+        return start_a < end_b and start_b < end_a
+
+    def _section_raw_data_intervals(self):
+        """File intervals covered by the headers and section raw data."""
+
+        intervals = []
+        size_of_headers = getattr(self.OPTIONAL_HEADER, "SizeOfHeaders", None)
+        if size_of_headers:
+            intervals.append((0, size_of_headers, "headers"))
+        for section in self.sections:
+            if not section.PointerToRawData or not section.SizeOfRawData:
+                continue
+            intervals.append(
+                (
+                    section.PointerToRawData,
+                    section.PointerToRawData + section.SizeOfRawData,
+                    section.Name.rstrip(b"\x00").decode(
+                        "ascii", errors="backslashreplace"
+                    )
+                    or "unnamed section",
+                )
+            )
+        return intervals
+
+    def parse_security_directory(self, strict=False):
+        """Audit the WIN_CERTIFICATE table in the security data directory.
+
+        The audit is strictly structural: it never executes the sample,
+        parses the embedded PKCS#7 content or validates any certificate
+        chain. A result without anomalies therefore only means that the
+        WIN_CERTIFICATE records are laid out correctly, never that the
+        signature is authentic.
+
+        Unlike every other data directory, the VirtualAddress field of
+        IMAGE_DIRECTORY_ENTRY_SECURITY holds a raw file offset, not an RVA;
+        no RVA to offset translation is performed.
+
+        Args:
+            strict: when True the first fatal structural anomaly raises
+                :class:`SecurityDirectoryError`; the partial audit remains
+                available on the exception's ``security_directory``
+                attribute. When False (the default, matching pefile's
+                warning based style) every record that can still be located
+                is reported together with its anomalies. The lenient walk
+                always advances by the declared record length (8 byte
+                aligned), never guesses the next header location, and stops
+                when a length cannot be trusted or
+                :data:`MAX_CERTIFICATE_ENTRIES` is reached.
+
+        Returns:
+            SecurityDirectory: the audit result.
+        """
+
+        cache_attr = (
+            "_PE__security_directory_strict__"
+            if strict
+            else "_PE__security_directory_lenient__"
+        )
+        cached = getattr(self, cache_attr, None)
+        if cached is not None:
+            return cached
+
+        result = self._audit_security_directory(strict)
+        setattr(self, cache_attr, result)
+        return result
+
+    def audit_security_directory(self, strict=False):
+        """Alias for :meth:`parse_security_directory`."""
+
+        return self.parse_security_directory(strict=strict)
+
+    def _audit_security_directory(self, strict):
+        result = SecurityDirectory(present=True, strict=strict)
+        data = self.__data__
+        file_size = len(data)
+
+        dir_entry = self._security_directory_entry()
+        if dir_entry is None:
+            # The optional header has no security directory entry at all.
+            result.present = False
+            return result
+
+        # NOTE: for IMAGE_DIRECTORY_ENTRY_SECURITY VirtualAddress is a raw
+        # file offset. Do NOT route it through get_offset_from_rva().
+        sec_offset = dir_entry.VirtualAddress
+        sec_size = dir_entry.Size
+        result.directory_offset = sec_offset or None
+        result.directory_size = sec_size or None
+
+        if sec_offset == 0 and sec_size == 0:
+            # A zeroed entry means the image simply is not signed.
+            result.declared = False
+            result.valid_structure = False
+            return result
+
+        result.declared = True
+        result.table_start_offset = sec_offset
+
+        def raise_or_record(anomaly, target=None):
+            """Record an anomaly; strict mode rejects on the first one.
+
+            Lenient mode keeps walking so every locatable record and its
+            anomalies can be reported; strict mode rejects the malformed table
+            immediately while still exposing the partial audit on the
+            exception.
+            """
+
+            if target is None:
+                result.anomalies.append(anomaly)
+            else:
+                target.anomalies.append(anomaly)
+            if strict:
+                raise SecurityDirectoryError(
+                    anomaly.message,
+                    security_directory=result,
+                    anomaly=anomaly,
+                )
+
+        # The declared directory extent, clipped to what the file can hold.
+        declared_end = None
+        if sec_size and sec_offset <= 0xFFFFFFFF - sec_size:
+            if sec_offset < file_size and sec_offset + sec_size > file_size:
+                raise_or_record(
+                    SecurityAnomaly(
+                        SECURITY_ANOMALY_DIRENT_SIZE_BEYOND_EOF,
+                        f"Security directory extent "
+                        f"{sec_offset:#x}+{sec_size:#x}="
+                        f"{sec_offset + sec_size:#x} runs past end of file "
+                        f"({file_size:#x}).",
+                        offset=sec_offset,
+                    )
+                )
+            declared_end = min(sec_offset + sec_size, file_size)
+
+        if sec_offset == 0:
+            result.table_end_offset = 0
+            raise_or_record(
+                SecurityAnomaly(
+                    SECURITY_ANOMALY_DIRENT_ZERO_OFFSET,
+                    f"Security directory declares size {sec_size:#x} but a "
+                    "zero file offset.",
+                    offset=0,
+                )
+            )
+            return result
+
+        if sec_offset % WIN_CERTIFICATE_ALIGNMENT:
+            raise_or_record(
+                SecurityAnomaly(
+                    SECURITY_ANOMALY_MISALIGNED_RECORD,
+                    f"Security directory starts at {sec_offset:#x}, which is "
+                    f"not {WIN_CERTIFICATE_ALIGNMENT} byte aligned as required "
+                    "for the WIN_CERTIFICATE table.",
+                    offset=sec_offset,
+                )
+            )
+
+        if (
+            sec_offset >= file_size
+            or (sec_size and sec_offset > 0xFFFFFFFF - sec_size)
+        ):
+            result.table_end_offset = file_size
+            raise_or_record(
+                SecurityAnomaly(
+                    SECURITY_ANOMALY_DIRENT_BEYOND_EOF,
+                    f"Security directory starts at file offset {sec_offset:#x} "
+                    f"with size {sec_size:#x}, outside the file "
+                    f"({file_size:#x} bytes).",
+                    offset=sec_offset,
+                )
+            )
+            return result
+
+        result.table_end_offset = declared_end
+
+        # A well formed table lives in the file's trailing data, never
+        # inside the headers or a section's raw data. The per-record walk
+        # below performs the precise, indexed checks.
+        intervals = self._section_raw_data_intervals()
+
+        if sec_size and sec_size < WIN_CERTIFICATE_HEADER_SIZE:
+            raise_or_record(
+                SecurityAnomaly(
+                    SECURITY_ANOMALY_DIRENT_SIZE_TOO_SMALL,
+                    f"Security directory size {sec_size:#x} is smaller than a "
+                    f"WIN_CERTIFICATE header ({WIN_CERTIFICATE_HEADER_SIZE:#x} "
+                    "bytes).",
+                    offset=sec_offset,
+                )
+            )
+            return result
+
+        cursor = sec_offset
+        walk_end = sec_offset
+        index = 0
+        walk_aborted = False
+        # Extents of every fully walked record, used to prove overlaps even
+        # when the overlap makes the walk land inside another record.
+        claimed_intervals = []
+
+        while cursor < file_size:
+            if declared_end is not None and cursor >= declared_end:
+                break
+
+            if index >= MAX_CERTIFICATE_ENTRIES:
+                raise_or_record(
+                    SecurityAnomaly(
+                        SECURITY_ANOMALY_TOO_MANY_ENTRIES,
+                        f"Certificate entry count cap "
+                        f"({MAX_CERTIFICATE_ENTRIES}) reached; stopping the "
+                        "walk to avoid endless scanning.",
+                        offset=cursor,
+                        record_index=index,
+                    )
+                )
+                walk_aborted = True
+                break
+
+            # Records must start on an 8 byte boundary relative to the
+            # table start. The first record is implicitly aligned and the
+            # walk always advances over rounded extents, so reaching a
+            # non aligned slot proves the table was already corrupted.
+            if (cursor - sec_offset) % WIN_CERTIFICATE_ALIGNMENT:
+                raise_or_record(
+                    SecurityAnomaly(
+                        SECURITY_ANOMALY_MISALIGNED_RECORD,
+                        f"WIN_CERTIFICATE #{index} at {cursor:#x} is not "
+                        f"{WIN_CERTIFICATE_ALIGNMENT} byte aligned within the "
+                        "security directory.",
+                        offset=cursor,
+                        record_index=index,
+                    )
+                )
+
+            # The 8 byte header must be fully present.
+            if cursor + WIN_CERTIFICATE_HEADER_SIZE > file_size or (
+                declared_end is not None
+                and cursor + WIN_CERTIFICATE_HEADER_SIZE > declared_end
+            ):
+                raise_or_record(
+                    SecurityAnomaly(
+                        SECURITY_ANOMALY_HEADER_TRUNCATED,
+                        f"WIN_CERTIFICATE #{index} header at {cursor:#x} is "
+                        "truncated by the end of the file or directory.",
+                        offset=cursor,
+                        record_index=index,
+                    )
+                )
+                walk_aborted = True
+                break
+
+            header_bytes = bytes(
+                data[cursor : cursor + WIN_CERTIFICATE_HEADER_SIZE]
+            )
+
+            # An all zero slot marks the end of the records. The walk only
+            # reaches this point by following declared record lengths, so no
+            # header location is being guessed; the tail check below decides
+            # whether the remaining bytes are valid padding.
+            if not any(header_bytes):
+                break
+
+            entry = WinCertificateEntry(index, cursor)
+            dw_length, w_revision, w_certificate_type = struct.unpack(
+                "<IHH",
+                header_bytes,
+            )
+            entry.dwLength = dw_length
+            entry.wRevision = w_revision
+            entry.wCertificateType = w_certificate_type
+            header = Structure(self.__WIN_CERTIFICATE_format__, file_offset=cursor)
+            header.__unpack__(header_bytes)
+            # Intentionally not registered in self.__structures__ so that
+            # the audit can never rewrite the original bytes via write().
+            entry.struct = header
+
+            if w_revision not in WIN_CERTIFICATE_REVISION:
+                raise_or_record(
+                    SecurityAnomaly(
+                        SECURITY_ANOMALY_UNKNOWN_REVISION,
+                        f"WIN_CERTIFICATE #{index} has unknown revision "
+                        f"{w_revision:#06x}.",
+                        offset=cursor,
+                        record_index=index,
+                    ),
+                    target=entry,
+                )
+
+            if w_certificate_type not in WIN_CERTIFICATE_TYPE:
+                raise_or_record(
+                    SecurityAnomaly(
+                        SECURITY_ANOMALY_UNKNOWN_TYPE,
+                        f"WIN_CERTIFICATE #{index} has unknown certificate "
+                        f"type {w_certificate_type:#06x}.",
+                        offset=cursor,
+                        record_index=index,
+                    ),
+                    target=entry,
+                )
+
+            # A declared length below the header size makes the next record
+            # location unknowable; the walk must stop rather than guess.
+            if dw_length < WIN_CERTIFICATE_HEADER_SIZE:
+                entry.end_offset = cursor + dw_length
+                result.entries.append(entry)
+                raise_or_record(
+                    SecurityAnomaly(
+                        SECURITY_ANOMALY_LENGTH_TOO_SMALL,
+                        f"WIN_CERTIFICATE #{index} at {cursor:#x} declares "
+                        f"dwLength {dw_length:#x}, smaller than the "
+                        f"{WIN_CERTIFICATE_HEADER_SIZE} byte header.",
+                        offset=cursor,
+                        record_index=index,
+                    ),
+                    target=entry,
+                )
+                walk_aborted = True
+                break
+
+            record_end = cursor + dw_length
+            entry.end_offset = record_end
+
+            # A dwLength that is not a multiple of 8 would place the next
+            # WIN_CERTIFICATE off the required alignment grid.
+            if dw_length % WIN_CERTIFICATE_ALIGNMENT:
+                raise_or_record(
+                    SecurityAnomaly(
+                        SECURITY_ANOMALY_MISALIGNED_RECORD,
+                        f"WIN_CERTIFICATE #{index} at {cursor:#x} declares "
+                        f"dwLength {dw_length:#x}, which is not a multiple of "
+                        f"{WIN_CERTIFICATE_ALIGNMENT}; the next record would "
+                        "not be 8 byte aligned.",
+                        offset=cursor,
+                        record_index=index,
+                    ),
+                    target=entry,
+                )
+
+            # Overlap with any record already walked. Following only aligned
+            # declared lengths can otherwise land inside another record's
+            # payload, where a fake header hides the collision; this check
+            # proves it against every claimed extent.
+            for other_start, other_end, other_index in claimed_intervals:
+                if self._intervals_intersect(
+                    cursor, record_end, other_start, other_end
+                ):
+                    raise_or_record(
+                        SecurityAnomaly(
+                            SECURITY_ANOMALY_OVERLAPPING_RECORD,
+                            f"WIN_CERTIFICATE #{index} "
+                            f"[{cursor:#x}, {record_end:#x}) overlaps "
+                            f"WIN_CERTIFICATE #{other_index} "
+                            f"[{other_start:#x}, {other_end:#x}).",
+                            offset=cursor,
+                            record_index=index,
+                        ),
+                        target=entry,
+                    )
+                    break
+
+            # Overlap with section raw data / headers.
+            for interval_start, interval_end, interval_name in intervals:
+                if self._intervals_intersect(
+                    cursor, record_end, interval_start, interval_end
+                ):
+                    code = (
+                        SECURITY_ANOMALY_DIRENT_IN_HEADERS
+                        if interval_name == "headers"
+                        else SECURITY_ANOMALY_IN_SECTION_DATA
+                    )
+                    raise_or_record(
+                        SecurityAnomaly(
+                            code,
+                            f"WIN_CERTIFICATE #{index} "
+                            f"[{cursor:#x}, {record_end:#x}) overlaps "
+                            f"{interval_name} raw data "
+                            f"[{interval_start:#x}, {interval_end:#x}).",
+                            offset=cursor,
+                            record_index=index,
+                        ),
+                        target=entry,
+                    )
+
+            if record_end > file_size or (
+                declared_end is not None and record_end > declared_end
+            ):
+                # Last (or only) record cut short: keep whatever payload is
+                # physically present and stop.
+                available_end = min(
+                    record_end,
+                    file_size,
+                    declared_end if declared_end is not None else file_size,
+                )
+                entry.data = bytes(data[cursor + WIN_CERTIFICATE_HEADER_SIZE : available_end])
+                entry.aligned_end_offset = record_end
+                result.entries.append(entry)
+                raise_or_record(
+                    SecurityAnomaly(
+                        SECURITY_ANOMALY_RECORD_TRUNCATED,
+                        f"WIN_CERTIFICATE #{index} at {cursor:#x} declares "
+                        f"length {dw_length:#x} ending at {record_end:#x}, "
+                        f"but only {available_end - cursor} bytes are available.",
+                        offset=cursor,
+                        record_index=index,
+                    ),
+                    target=entry,
+                )
+                walk_aborted = True
+                break
+
+            entry.data = bytes(
+                data[cursor + WIN_CERTIFICATE_HEADER_SIZE : record_end]
+            )
+            aligned_end = (
+                (record_end + WIN_CERTIFICATE_ALIGNMENT - 1)
+                // WIN_CERTIFICATE_ALIGNMENT
+                * WIN_CERTIFICATE_ALIGNMENT
+            )
+            entry.aligned_end_offset = aligned_end
+            result.entries.append(entry)
+            claimed_intervals.append((cursor, record_end, index))
+            walk_end = max(walk_end, aligned_end)
+
+            # Guaranteed forward progress: dw_length >= header size means
+            # the next cursor is strictly greater than the current one.
+            cursor = aligned_end
+            index += 1
+
+        # Bounded verification over the declared directory extent. Every
+        # position probed is a deterministic 8 byte grid slot, so nothing is
+        # guessed. A slot the forward walk never visited that nevertheless
+        # holds a plausible WIN_CERTIFICATE header reveals a record hidden
+        # inside another record's extent (overlap).
+        if declared_end is not None:
+            visited = {entry.file_offset for entry in result.entries}
+            slot = sec_offset
+            upper = min(declared_end, file_size)
+            while slot + WIN_CERTIFICATE_HEADER_SIZE <= upper:
+                if slot not in visited:
+                    slot_length, slot_rev, slot_type = struct.unpack(
+                        "<IHH",
+                        bytes(data[slot : slot + WIN_CERTIFICATE_HEADER_SIZE]),
+                    )
+                    plausible = (
+                        slot_length >= WIN_CERTIFICATE_HEADER_SIZE
+                        and slot_length <= upper - slot
+                        and slot_rev in WIN_CERTIFICATE_REVISION
+                        and slot_type in WIN_CERTIFICATE_TYPE
+                    )
+                    if plausible:
+                        for other_start, other_end, other_index in claimed_intervals:
+                            if other_start < slot < other_end:
+                                raise_or_record(
+                                    SecurityAnomaly(
+                                        SECURITY_ANOMALY_OVERLAPPING_RECORD,
+                                        f"WIN_CERTIFICATE header at {slot:#x} is "
+                                        f"embedded in WIN_CERTIFICATE "
+                                        f"#{other_index} "
+                                        f"[{other_start:#x}, {other_end:#x}); "
+                                        "the records overlap.",
+                                        offset=slot,
+                                    )
+                                )
+                                break
+                slot += WIN_CERTIFICATE_ALIGNMENT
+
+        if not walk_aborted and declared_end is not None:
+            if walk_end > declared_end:
+                # The last record's declared extent reaches past the
+                # directory boundary; that was already reported per record.
+                pass
+            elif walk_end != declared_end:
+                leftover = bytes(data[walk_end:declared_end])
+                if any(leftover):
+                    raise_or_record(
+                        SecurityAnomaly(
+                            SECURITY_ANOMALY_TRAILING_GARBAGE,
+                            f"{len(leftover)} non directory bytes found between "
+                            f"the last record ({walk_end:#x}) and the declared "
+                            f"directory end ({declared_end:#x}); overlay data "
+                            "must not be counted as certificate data.",
+                            offset=walk_end,
+                        )
+                    )
+                else:
+                    raise_or_record(
+                        SecurityAnomaly(
+                            SECURITY_ANOMALY_DIRENT_SIZE_MISMATCH,
+                            f"Zero padding between the last record "
+                            f"({walk_end:#x}) and the declared directory end "
+                            f"({declared_end:#x}); the directory size does not "
+                            "match its records.",
+                            offset=walk_end,
+                        )
+                    )
+        elif not walk_aborted and sec_size == 0:
+            raise_or_record(
+                SecurityAnomaly(
+                    SECURITY_ANOMALY_DIRENT_SIZE_MISMATCH,
+                    f"Security directory at {sec_offset:#x} declares a zero "
+                    "size while containing certificate records.",
+                    offset=sec_offset,
+                )
+            )
+
+        if result.table_end_offset is None:
+            result.table_end_offset = walk_end
+        result.valid_structure = not result.all_anomalies()
+        return result
+
     def get_overlay_data_start_offset(self):
         """Get the offset of data appended to the file and not contained within
         the area described in the headers.
@@ -7884,6 +8714,9 @@ class PE:
 
         for idx, directory in enumerate(self.OPTIONAL_HEADER.DATA_DIRECTORY):
             if idx in skip_directories:
+                # IMAGE_DIRECTORY_ENTRY_SECURITY uses a raw file offset rather
+                # than an RVA, so it is handled separately below; never run it
+                # through the RVA to offset translation.
                 continue
             try:
                 largest_offset_and_size = update_if_sum_is_larger_and_within_file(
@@ -7892,6 +8725,17 @@ class PE:
             # Ignore directories with RVA out of file
             except PEFormatError:
                 continue
+
+        security_entry = self._security_directory_entry()
+        if security_entry is not None and security_entry.VirtualAddress:
+            # The certificate table occupies trailing file data; data past its
+            # declared extent is overlay, not certificate content. The
+            # interval is only accepted when it lies wholly within the file.
+            security_start = security_entry.VirtualAddress
+            security_extent = (security_start, security_entry.Size)
+            largest_offset_and_size = update_if_sum_is_larger_and_within_file(
+                security_extent
+            )
 
         if len(self.__data__) > sum(largest_offset_and_size):
             return sum(largest_offset_and_size)

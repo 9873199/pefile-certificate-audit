@@ -50,6 +50,7 @@ Some of the tasks that pefile makes possible are:
   * Overwriting fields should mostly be safe.
 * Packer detection with [PEiD’s signatures](https://github.com/erocarrera/pefile/blob/wiki/PEiDSignatures.md)
 * [PEiD signature](https://github.com/erocarrera/pefile/blob/wiki/PEiDSignatures.md) generation
+* Structural auditing of the certificate (security) table: `PE.parse_security_directory()` locates every `WIN_CERTIFICATE` record's file range, declared length, revision and type, and reports malformed layouts (truncated or overlapping records, lengths smaller than the header, out of file extents, records inside section data, misalignment). It distinguishes a missing table from a malformed one, and a readable layout is reported as unverified — this never validates the signature itself or its certificate chain.
 
 Please, refer to [Usage Examples](https://github.com/erocarrera/pefile/blob/wiki/UsageExamples.md#introduction) for some code snippets that demonstrate how to use _pefile_.
 
