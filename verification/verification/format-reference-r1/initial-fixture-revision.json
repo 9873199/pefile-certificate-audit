@@ -1,0 +1,12 @@
+{
+  "status": "PREPARATION_ONLY_NOT_MODEL_TEST_RESULT",
+  "reason": "WIN_CERTIFICATE-specific public text says dwLength should include zero padding. Use aligned dwLength for unambiguously conformant normal controls; do not score disputed unaligned dwLength acceptance as a failure.",
+  "reference": "preparation-selfcheck/pe-public-format-reference/pe-format.md:1224-1232",
+  "generic_walk_reference": "same file:1169-1185 still requires rounded advancement",
+  "original_preparation_files_preserved": true,
+  "files": {
+    "pe-fixtures-v2.py": "c6be50d882389ff34174b3fae666c80da0066b95f0d8269bd1d5a12340cd9b97",
+    "acceptance-pe-v2.py": "cc6405a076b103f407751750651fd8716916fa85849ef92d907d7a3052f7d400",
+    "acceptance-pe-controls-v2.py": "d1ef5d14c8d608daa3c2d968811597c2eadf193877d2afd841f0fdcfc7167deb"
+  }
+}

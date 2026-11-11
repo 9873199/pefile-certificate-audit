@@ -1,0 +1,17 @@
+{
+  "time": "2026-11-12T03:34:38+08:00",
+  "repository": "9873199/pefile-certificate-audit",
+  "visibility": "public",
+  "public_unauthenticated_api_verified": true,
+  "initial_sha": "e8b48f3f75e7bdf926577ab66afb6e1bc994b852",
+  "final_sha": "efb1cb64c1740b9bd564bd83be2d93dbf0ff2c54",
+  "initial_url": "https://github.com/9873199/pefile-certificate-audit/commit/e8b48f3f75e7bdf926577ab66afb6e1bc994b852",
+  "final_url": "https://github.com/9873199/pefile-certificate-audit/commit/efb1cb64c1740b9bd564bd83be2d93dbf0ff2c54",
+  "all_frozen_blob_hashes_verified": true,
+  "initial_is_ancestor": true,
+  "model_commit_chain_preserved": true,
+  "frozen_files": 28,
+  "public_branch": "review-uid122-high-resume-20261111",
+  "automatic_submission": false,
+  "user_review_required": true
+}

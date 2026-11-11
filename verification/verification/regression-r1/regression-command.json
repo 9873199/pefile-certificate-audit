@@ -1,0 +1,22 @@
+{
+  "argv": [
+    "D:\\hc\\userFeedback\\cache\\envs\\uf-20261111-sec-08-pe-certificate-layout\\Scripts\\python.exe",
+    "-m",
+    "pytest",
+    "-q",
+    "-p",
+    "no:cacheprovider",
+    "D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\frozen-artifact\\tests",
+    "--basetemp",
+    "D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\verification\\regression-r1\\tmp-regression",
+    "--junitxml",
+    "D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\verification\\regression-r1\\regression.xml",
+    "--disable-warnings"
+  ],
+  "cwd": "D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\frozen-artifact",
+  "PYTHONPATH": "D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\frozen-artifact;D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\frozen-artifact\\src",
+  "python": "D:\\hc\\userFeedback\\cache\\envs\\uf-20261111-sec-08-pe-certificate-layout\\Scripts\\python.exe",
+  "exit_code": 1,
+  "seconds": 7.4,
+  "log": "D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\verification\\regression-r1\\regression.log"
+}

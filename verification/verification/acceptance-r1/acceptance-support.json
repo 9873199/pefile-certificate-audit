@@ -1,0 +1,14 @@
+{
+  "files": [
+    {
+      "path": "pe_adapter.py",
+      "sha256": "b6341d760cdcb62917d685d74b00fcd57b2bed0e222bdaa534d703342435df36",
+      "source": "D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\inputs\\pe_adapter.py"
+    },
+    {
+      "path": "pe_fixtures.py",
+      "sha256": "c6be50d882389ff34174b3fae666c80da0066b95f0d8269bd1d5a12340cd9b97",
+      "source": "D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\inputs\\pe_fixtures.py"
+    }
+  ]
+}

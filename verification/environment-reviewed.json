@@ -1,0 +1,24 @@
+{
+  "time": "2026-11-12T03:47:05+08:00",
+  "container_used": false,
+  "python": "D:\\hc\\userFeedback\\cache\\envs\\uf-20261111-sec-08-pe-certificate-layout\\Scripts\\python.exe",
+  "dependencies": {
+    "python": "3.14.3 (tags/v3.14.3:323c59a, Feb  3 2026, 16:04:56) [MSC v.1944 64 bit (AMD64)]",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "module_paths": {
+      "pefile": "D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\frozen-artifact\\pefile.py",
+      "peutils": "D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\frozen-artifact\\peutils.py"
+    },
+    "packages": {
+      "pefile": "2024.8.26",
+      "pytest": "9.2.0"
+    }
+  },
+  "external_dependencies": [
+    "Native Windows Python, pefile pure-Python source and pytest; no container",
+    "Independent inputs are locally assembled, nonexecuted PE32/PE32+ bytes; no signature/certificate chain service",
+    "External upstream pefile-tests corpus unavailable; all11 failures independently reproduced at initial commit",
+    "Public Microsoft PE format reference was downloaded during preparation only; product verification is offline"
+  ],
+  "module_import_verified": true
+}

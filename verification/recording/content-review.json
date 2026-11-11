@@ -1,0 +1,24 @@
+{
+  "time": "2026-11-12T03:46:21+08:00",
+  "duration_seconds": 75.0,
+  "width": 1280,
+  "height": 720,
+  "continuous": true,
+  "full_stream_decoded": true,
+  "black_intervals": [],
+  "reviewed_frames_seconds": [
+    3,
+    35,
+    70
+  ],
+  "content_reviewed": true,
+  "shown_scenarios": [
+    "start clean console and run 69 selected native/section regression tests",
+    "independent native exception-state checks:21 passed,2 failed",
+    "opaque-payload and read-only controls:5 passed,2 failed",
+    "direct native diagnostics show overlapping_records at0x408 and incorrect partial status after genuine strict refusal"
+  ],
+  "helper_is_separate_verification_tool": true,
+  "diagnostic_exit_zero_is_not_acceptance_pass": true,
+  "video_sha256": "5cceecd1595f9684dbc996b8c663c4ebd75fc7a83d0e7da7d0f6b2b77ede8fa6"
+}

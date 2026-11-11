@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="7" time="0.963" timestamp="2026-11-12T03:37:43.856041+08:00" hostname="DESKTOP-BPAMAV8"><testcase classname="verification.controls-r1.test_acceptance" name="test_opaque_certificate_payload_is_not_guessed_as_another_record[PE32]" time="0.001"><failure message="pefile.SecurityDirectoryError: 'WIN_CERTIFICATE header at 0x408 is embedded in WIN_CERTIFICATE #0 [0x400, 0x420); the records overlap.'">plus = False
+
+    @pytest.mark.parametrize('plus', [False, True], ids=['PE32', 'PE32plus'])
+    def test_opaque_certificate_payload_is_not_guessed_as_another_record(plus):
+        # A valid-looking WIN_CERTIFICATE header inside an opaque payload is data,
+        # not an independently indexed certificate. There is no signature check.
+        payload = struct.pack('&lt;IHH', 16, 0x200, 2) + b'opaque-data-only'
+        assert len(payload) + 8 == 32
+        wire = fixtures.minimal_pe(plus=plus, records=[fixtures.certificate(payload)])
+&gt;       result = api.audit(wire, strict=True)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+..\verification\controls-r1\test_acceptance.py:23: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+..\verification\controls-r1\pe_adapter.py:22: in audit
+    return audit_object(pe, strict=strict)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\verification\controls-r1\pe_adapter.py:18: in audit_object
+    return project(pe.parse_security_directory(strict=strict))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pefile.py:8238: in parse_security_directory
+    result = self._audit_security_directory(strict)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pefile.py:8628: in _audit_security_directory
+    raise_or_record(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+anomaly = &lt;SecurityAnomaly: overlapping_records (offset 0x408): WIN_CERTIFICATE header at 0x408 is embedded in WIN_CERTIFICATE #0 [0x400, 0x420); the records overlap.&gt;
+target = None
+
+    def raise_or_record(anomaly, target=None):
+        """Record an anomaly; strict mode rejects on the first one.
+    
+        Lenient mode keeps walking so every locatable record and its
+        anomalies can be reported; strict mode rejects the malformed table
+        immediately while still exposing the partial audit on the
+        exception.
+        """
+    
+        if target is None:
+            result.anomalies.append(anomaly)
+        else:
+            target.anomalies.append(anomaly)
+        if strict:
+&gt;           raise SecurityDirectoryError(
+                anomaly.message,
+                security_directory=result,
+                anomaly=anomaly,
+            )
+E           pefile.SecurityDirectoryError: 'WIN_CERTIFICATE header at 0x408 is embedded in WIN_CERTIFICATE #0 [0x400, 0x420); the records overlap.'
+
+pefile.py:8288: SecurityDirectoryError</failure></testcase><testcase classname="verification.controls-r1.test_acceptance" name="test_opaque_certificate_payload_is_not_guessed_as_another_record[PE32plus]" time="0.001"><failure message="pefile.SecurityDirectoryError: 'WIN_CERTIFICATE header at 0x408 is embedded in WIN_CERTIFICATE #0 [0x400, 0x420); the records overlap.'">plus = True
+
+    @pytest.mark.parametrize('plus', [False, True], ids=['PE32', 'PE32plus'])
+    def test_opaque_certificate_payload_is_not_guessed_as_another_record(plus):
+        # A valid-looking WIN_CERTIFICATE header inside an opaque payload is data,
+        # not an independently indexed certificate. There is no signature check.
+        payload = struct.pack('&lt;IHH', 16, 0x200, 2) + b'opaque-data-only'
+        assert len(payload) + 8 == 32
+        wire = fixtures.minimal_pe(plus=plus, records=[fixtures.certificate(payload)])
+&gt;       result = api.audit(wire, strict=True)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+..\verification\controls-r1\test_acceptance.py:23: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+..\verification\controls-r1\pe_adapter.py:22: in audit
+    return audit_object(pe, strict=strict)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\verification\controls-r1\pe_adapter.py:18: in audit_object
+    return project(pe.parse_security_directory(strict=strict))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pefile.py:8238: in parse_security_directory
+    result = self._audit_security_directory(strict)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pefile.py:8628: in _audit_security_directory
+    raise_or_record(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+anomaly = &lt;SecurityAnomaly: overlapping_records (offset 0x408): WIN_CERTIFICATE header at 0x408 is embedded in WIN_CERTIFICATE #0 [0x400, 0x420); the records overlap.&gt;
+target = None
+
+    def raise_or_record(anomaly, target=None):
+        """Record an anomaly; strict mode rejects on the first one.
+    
+        Lenient mode keeps walking so every locatable record and its
+        anomalies can be reported; strict mode rejects the malformed table
+        immediately while still exposing the partial audit on the
+        exception.
+        """
+    
+        if target is None:
+            result.anomalies.append(anomaly)
+        else:
+            target.anomalies.append(anomaly)
+        if strict:
+&gt;           raise SecurityDirectoryError(
+                anomaly.message,
+                security_directory=result,
+                anomaly=anomaly,
+            )
+E           pefile.SecurityDirectoryError: 'WIN_CERTIFICATE header at 0x408 is embedded in WIN_CERTIFICATE #0 [0x400, 0x420); the records overlap.'
+
+pefile.py:8288: SecurityDirectoryError</failure></testcase><testcase classname="verification.controls-r1.test_acceptance" name="test_file_and_pe_write_bytes_unchanged_across_audit_and_directory_parse[PE32]" time="0.006" /><testcase classname="verification.controls-r1.test_acceptance" name="test_file_and_pe_write_bytes_unchanged_across_audit_and_directory_parse[PE32plus]" time="0.006" /><testcase classname="verification.controls-r1.test_acceptance" name="test_single_record_declared_interval_includes_zero_padding[PE32]" time="0.001" /><testcase classname="verification.controls-r1.test_acceptance" name="test_single_record_declared_interval_includes_zero_padding[PE32plus]" time="0.001" /><testcase classname="verification.controls-r1.test_acceptance" name="test_lenient_result_does_not_bypass_strict_rejection_on_reused_object" time="0.001" /></testsuite></testsuites>

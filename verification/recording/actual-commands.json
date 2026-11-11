@@ -1,0 +1,69 @@
+[
+  {
+    "id": "check-1",
+    "argv": [
+      "D:\\hc\\userFeedback\\cache\\envs\\uf-20261111-sec-08-pe-certificate-layout\\Scripts\\python.exe",
+      "-B",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "tests/test_security_directory.py",
+      "tests/test_section_names.py",
+      "--basetemp",
+      "D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\recording\\r1\\tmp-regression",
+      "--disable-warnings"
+    ],
+    "exit_code": 0,
+    "finished_at_seconds": 2.55
+  },
+  {
+    "id": "check-2",
+    "argv": [
+      "D:\\hc\\userFeedback\\cache\\envs\\uf-20261111-sec-08-pe-certificate-layout\\Scripts\\python.exe",
+      "-B",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\verification\\acceptance-r1\\test_acceptance.py",
+      "--tb=short",
+      "--basetemp",
+      "D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\recording\\r1\\tmp-check-2",
+      "--disable-warnings"
+    ],
+    "exit_code": 1,
+    "finished_at_seconds": 22.12
+  },
+  {
+    "id": "check-3",
+    "argv": [
+      "D:\\hc\\userFeedback\\cache\\envs\\uf-20261111-sec-08-pe-certificate-layout\\Scripts\\python.exe",
+      "-B",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\verification\\controls-r1\\test_acceptance.py",
+      "--tb=short",
+      "--basetemp",
+      "D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\recording\\r1\\tmp-check-3",
+      "--disable-warnings"
+    ],
+    "exit_code": 1,
+    "finished_at_seconds": 42.6
+  },
+  {
+    "id": "check-4",
+    "argv": [
+      "D:\\hc\\userFeedback\\cache\\envs\\uf-20261111-sec-08-pe-certificate-layout\\Scripts\\python.exe",
+      "-B",
+      "D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\verification\\observations-r1\\inspect_certificate_layout.py"
+    ],
+    "exit_code": 0,
+    "finished_at_seconds": 58.67
+  }
+]

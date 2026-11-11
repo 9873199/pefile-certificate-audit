@@ -1,0 +1,40 @@
+{
+  "time": "2026-11-12T03:37:20+08:00",
+  "run_id": "uf-20261111-sec-08-pe-certificate-layout",
+  "checks": {
+    "acceptance": {
+      "tests": 23,
+      "passed": 21,
+      "failures": 2,
+      "errors": 0,
+      "skipped": 0,
+      "failure_cases": [
+        "test_damage_has_exact_native_issue_and_strict_error_without_rewriting[section-overlap-PE32]",
+        "test_damage_has_exact_native_issue_and_strict_error_without_rewriting[section-overlap-PE32plus]"
+      ],
+      "exit_code": 1,
+      "xfailed": 0,
+      "xpassed": 0,
+      "pytest_terminal_summary": {
+        "failed": 2,
+        "passed": 21
+      },
+      "junit_raw_counts": {
+        "tests": 23,
+        "passed": 21,
+        "failures": 2,
+        "errors": 0,
+        "skipped": 0,
+        "failure_cases": [
+          "test_damage_has_exact_native_issue_and_strict_error_without_rewriting[section-overlap-PE32]",
+          "test_damage_has_exact_native_issue_and_strict_error_without_rewriting[section-overlap-PE32plus]"
+        ],
+        "exit_code": 1
+      },
+      "count_source": "pytest terminal summary; XML kept unchanged"
+    }
+  },
+  "artifact_hashes_unchanged": true,
+  "score": null,
+  "feedback": "PENDING_SEMANTIC_REVIEW"
+}

@@ -1,0 +1,140 @@
+{
+  "time": "2026-11-12T03:47:05+08:00",
+  "uid": 122,
+  "frozen_commit": "efb1cb64c1740b9bd564bd83be2d93dbf0ff2c54",
+  "native_trajectory_sha256": "6d7c75297c59697214ff3085f1942027aceafa146a555f515e31318efe0dd618",
+  "private_reasoning_used": false,
+  "requirements": [
+    {
+      "requirement": "raw-file security-directory address, exact record intervals/length/revision/type and overlay boundary",
+      "result": "verified for normal padded layouts",
+      "source": "pefile.py:8258,932,8717",
+      "evidence": "verification/acceptance-r1,controls-r1"
+    },
+    {
+      "requirement": "distinguish absent, malformed and readable-but-unverified tables without guessing opaque payload headers",
+      "result": "FAILURE: false overlapping_records at0x408 inside one32-byte record",
+      "source": "pefile.py:8611-8640; tests/test_security_directory.py:346",
+      "evidence": "verification/controls-r1 and observations-r1; bothPE32 andPE32+"
+    },
+    {
+      "requirement": "strict refusal and lenient forensic issue locations for damaged layouts",
+      "result": "strict refusal/code/offset work in tested damage; PARTIAL_FAILURE in attached strict result status",
+      "source": "pefile.py:8283-8293,8540-8559,8595",
+      "evidence": "verification/acceptance-r1: section overlap is refused but exception.security_directory.status=readable_unverified; observations-r1"
+    },
+    {
+      "requirement": "bounded record walk with progress; truncated header/record, section overlap, misalignment and integer bounds",
+      "result": "verified for exact planned inputs; no claim about all large-file complexity",
+      "evidence": "verification/acceptance-r1; cap instrumented explicitly via actual module constant MAX_CERTIFICATE_ENTRIES"
+    },
+    {
+      "requirement": "PE bytes unchanged, normal/fast explicit audit consistent and existing overlay/dump operations usable",
+      "result": "verified for tested normal and damaged inputs",
+      "evidence": "verification/controls-r1,acceptance-r1,observations-r1; explicit new audit API tested, no claim generic parse_data_directories gained security parsing"
+    },
+    {
+      "requirement": "regression and minimal PE32/PE32+ controls; no sample execution or signature-valid claim",
+      "result": "102 regression parents and529 subtests passed;11 missing-corpus failures and1 skipped; two independent issue classes remain",
+      "evidence": "verification/regression-r1,baseline-r1,baseline-comparison-r2; native final answer659 and native selected69-pass command655-656"
+    }
+  ],
+  "observable_process": [
+    {
+      "lines": [
+        443
+      ],
+      "fact": "add plausibility-filtered8-byte grid cross-check inside opaque certificate data"
+    },
+    {
+      "lines": [
+        480,
+        481,
+        507,
+        508
+      ],
+      "fact": "new suite first6failed39passed; revisions produce45passed; intermediate results not used as final acceptance"
+    },
+    {
+      "lines": [
+        598,
+        599
+      ],
+      "fact": "expanded native security suite49passed"
+    },
+    {
+      "lines": [
+        608,
+        609,
+        615,
+        616
+      ],
+      "fact": "full tests show11missing-corpus failures; model compares a clean baseline and restores changes"
+    },
+    {
+      "lines": [
+        640,
+        641,
+        645,
+        646,
+        655,
+        656
+      ],
+      "fact": "actual compile, PE32/PE32+ structural demo, and selected security/section suite69passed"
+    },
+    {
+      "lines": [
+        659
+      ],
+      "fact": "final answer claims criteria complete, describes fixed entry cap, partial errors, unverified status and grid overlap check; it discloses missing-corpus failures"
+    }
+  ],
+  "independent_suites": [
+    {
+      "path": "verification/regression-r1",
+      "passed": 102,
+      "subtests_passed": 529,
+      "failures": 11,
+      "skipped": 1,
+      "failure_class": "missing external corpus, also present at initial commit"
+    },
+    {
+      "path": "verification/acceptance-r1",
+      "tests": 23,
+      "passed": 21,
+      "failures": 2
+    },
+    {
+      "path": "verification/controls-r1",
+      "tests": 7,
+      "passed": 5,
+      "failures": 2
+    },
+    {
+      "path": "verification/baseline-r1",
+      "passed": 53,
+      "subtests_passed": 529,
+      "failures": 11,
+      "skipped": 1,
+      "kind": "initial-source baseline, not final artifact result"
+    },
+    {
+      "path": "verification/observations-r1",
+      "kind": "direct native-state diagnostic; exit0 not acceptance pass"
+    }
+  ],
+  "excluded_engineering_attempts": [
+    {
+      "path": "verification/baseline-r1",
+      "scope": "comparison script after actual baseline tests",
+      "reason": "raw-byte source equality assertion failed on Git archive LF vs checkout CRLF; original outputs kept. baseline-comparison-r2 proves original test ASTs equal and Git tests unchanged; no model retry or source repair."
+    }
+  ],
+  "unverified": [
+    "External pefile-tests sample corpus unavailable; no claim of full sample-based regression success.",
+    "No Authenticode cryptographic authenticity or certificate-chain validation tested; explicitly out of requested scope.",
+    "No performance claim for every adversarial large file. Fixed forward record cap tested; post-walk scanning is separately reviewed.",
+    "The generic parse_data_directories method still ignores security; tested fast-load consistency uses the new explicit parse_security_directory API.",
+    "Original ruff/pyflakes attempts lacked installed tools; compile and actual tests are recorded, not a linter pass."
+  ]
+}

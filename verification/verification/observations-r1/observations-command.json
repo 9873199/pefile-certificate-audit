@@ -1,0 +1,11 @@
+{
+  "argv": [
+    "D:\\hc\\userFeedback\\cache\\envs\\uf-20261111-sec-08-pe-certificate-layout\\Scripts\\python.exe",
+    "-B",
+    "D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\verification\\observations-r1\\inspect_certificate_layout.py"
+  ],
+  "cwd": "D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\frozen-artifact",
+  "PYTHONPATH": "D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\frozen-artifact",
+  "exit_code": 0,
+  "kind": "Native-result diagnostic. Zero exit is not an acceptance pass."
+}

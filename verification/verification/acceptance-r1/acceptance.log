@@ -1,0 +1,56 @@
+..................FF...
+================================== FAILURES ===================================
+_ test_damage_has_exact_native_issue_and_strict_error_without_rewriting[section-overlap-PE32] _
+
+plus = False, name = 'section-overlap'
+
+    @pytest.mark.parametrize('plus', [False, True], ids=['PE32', 'PE32plus'])
+    @pytest.mark.parametrize('name', list(cases(False)))
+    def test_damage_has_exact_native_issue_and_strict_error_without_rewriting(plus, name):
+        wire, code, offset = cases(plus)[name]
+        digest = hashlib.sha256(wire).hexdigest()
+        with pefile.PE(data=wire, fast_load=True) as pe:
+            before = pe.write()
+            result = api.audit_object(pe, strict=False)
+            assert result['present'] and result['status'] == 'malformed'
+            assert (code, offset) in {(item['code'], item['offset']) for item in result['issues']}
+            with pytest.raises(api.StructureError) as caught:
+                api.audit_object(pe, strict=True)
+            assert caught.value.anomaly.code == code
+            assert caught.value.anomaly.offset == offset
+>           assert caught.value.security_directory.status == 'malformed'
+E           AssertionError: assert 'readable_unverified' == 'malformed'
+E             
+E             - malformed
+E             + readable_unverified
+
+..\verification\acceptance-r1\test_acceptance.py:70: AssertionError
+_ test_damage_has_exact_native_issue_and_strict_error_without_rewriting[section-overlap-PE32plus] _
+
+plus = True, name = 'section-overlap'
+
+    @pytest.mark.parametrize('plus', [False, True], ids=['PE32', 'PE32plus'])
+    @pytest.mark.parametrize('name', list(cases(False)))
+    def test_damage_has_exact_native_issue_and_strict_error_without_rewriting(plus, name):
+        wire, code, offset = cases(plus)[name]
+        digest = hashlib.sha256(wire).hexdigest()
+        with pefile.PE(data=wire, fast_load=True) as pe:
+            before = pe.write()
+            result = api.audit_object(pe, strict=False)
+            assert result['present'] and result['status'] == 'malformed'
+            assert (code, offset) in {(item['code'], item['offset']) for item in result['issues']}
+            with pytest.raises(api.StructureError) as caught:
+                api.audit_object(pe, strict=True)
+            assert caught.value.anomaly.code == code
+            assert caught.value.anomaly.offset == offset
+>           assert caught.value.security_directory.status == 'malformed'
+E           AssertionError: assert 'readable_unverified' == 'malformed'
+E             
+E             - malformed
+E             + readable_unverified
+
+..\verification\acceptance-r1\test_acceptance.py:70: AssertionError
+=========================== short test summary info ===========================
+FAILED ..\verification\acceptance-r1\test_acceptance.py::test_damage_has_exact_native_issue_and_strict_error_without_rewriting[section-overlap-PE32]
+FAILED ..\verification\acceptance-r1\test_acceptance.py::test_damage_has_exact_native_issue_and_strict_error_without_rewriting[section-overlap-PE32plus]
+2 failed, 21 passed in 0.75s

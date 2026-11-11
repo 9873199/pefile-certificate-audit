@@ -1,0 +1,25 @@
+{
+  "argv": [
+    "D:\\hc\\userFeedback\\cache\\envs\\uf-20261111-sec-08-pe-certificate-layout\\Scripts\\python.exe",
+    "-B",
+    "-m",
+    "pytest",
+    "-q",
+    "-p",
+    "no:cacheprovider",
+    "D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\verification\\baseline-r1\\source\\tests",
+    "--basetemp",
+    "D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\verification\\baseline-r1\\tmp-regression",
+    "--junitxml",
+    "D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\verification\\baseline-r1\\baseline.xml",
+    "--disable-warnings"
+  ],
+  "cwd": "D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\verification\\baseline-r1\\source",
+  "PYTHONPATH": "D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\verification\\baseline-r1\\source",
+  "exit_code": 1,
+  "seconds": 6.55,
+  "source_commit": "e8b48f3f75e7bdf926577ab66afb6e1bc994b852",
+  "initial_pefile_sha256": "d1266dd389cad3ac42fb0d6f4c20fd4aafa14325238c8d3dcc1a6e14982fd49c",
+  "initial_archive_sha256": "7e7692c9621b4defda57e78cef5c6094d449e1c5f58f6a7bcf68b807c652bca6",
+  "purpose": "Initial source replay; not model final-artifact test score"
+}

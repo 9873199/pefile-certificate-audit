@@ -1,0 +1,130 @@
+{
+  "time": "2026-11-12T03:39:58+08:00",
+  "initial_commit": "e8b48f3f75e7bdf926577ab66afb6e1bc994b852",
+  "initial_test_command": "../baseline-r1/baseline-command.json",
+  "same_eleven_failure_names_as_final": true,
+  "all_eleven_failures_missing_corpus": true,
+  "failures": [
+    {
+      "name": "test_checksum",
+      "message": "FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'D:\\\\hc\\\\userFeedback\\\\cache\\\\execution-security-high-resume-20261111\\\\evaluation\\\\uf-20261111-sec-08-pe-certificate-layout\\\\verification\\\\baseline-r1\\\\source\\\\pefile-tests\\\\tests\\\\data\\\\MSVBVM60.DLL'",
+      "FileNotFoundError_in_trace": true,
+      "missing_corpus_path_in_trace": true
+    },
+    {
+      "name": "test_driver_check",
+      "message": "FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'D:\\\\hc\\\\userFeedback\\\\cache\\\\execution-security-high-resume-20261111\\\\evaluation\\\\uf-20261111-sec-08-pe-certificate-layout\\\\verification\\\\baseline-r1\\\\source\\\\pefile-tests\\\\tests\\\\corkami\\\\pocs\\\\driver.sys'",
+      "FileNotFoundError_in_trace": true,
+      "missing_corpus_path_in_trace": true
+    },
+    {
+      "name": "test_empty_file_exception",
+      "message": "FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'D:\\\\hc\\\\userFeedback\\\\cache\\\\execution-security-high-resume-20261111\\\\evaluation\\\\uf-20261111-sec-08-pe-certificate-layout\\\\verification\\\\baseline-r1\\\\source\\\\pefile-tests\\\\tests\\\\data\\\\empty_file'",
+      "FileNotFoundError_in_trace": true,
+      "missing_corpus_path_in_trace": true
+    },
+    {
+      "name": "test_exphash",
+      "message": "FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'D:\\\\hc\\\\userFeedback\\\\cache\\\\execution-security-high-resume-20261111\\\\evaluation\\\\uf-20261111-sec-08-pe-certificate-layout\\\\verification\\\\baseline-r1\\\\source\\\\pefile-tests\\\\tests\\\\data\\\\mfc40.dll'",
+      "FileNotFoundError_in_trace": true,
+      "missing_corpus_path_in_trace": true
+    },
+    {
+      "name": "test_get_rich_header_hash",
+      "message": "FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'D:\\\\hc\\\\userFeedback\\\\cache\\\\execution-security-high-resume-20261111\\\\evaluation\\\\uf-20261111-sec-08-pe-certificate-layout\\\\verification\\\\baseline-r1\\\\source\\\\pefile-tests\\\\tests\\\\data\\\\kernel32.dll'",
+      "FileNotFoundError_in_trace": true,
+      "missing_corpus_path_in_trace": true
+    },
+    {
+      "name": "test_imphash",
+      "message": "FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'D:\\\\hc\\\\userFeedback\\\\cache\\\\execution-security-high-resume-20261111\\\\evaluation\\\\uf-20261111-sec-08-pe-certificate-layout\\\\verification\\\\baseline-r1\\\\source\\\\pefile-tests\\\\tests\\\\data\\\\mfc40.dll'",
+      "FileNotFoundError_in_trace": true,
+      "missing_corpus_path_in_trace": true
+    },
+    {
+      "name": "test_is_driver_and_is_exe_return_bool",
+      "message": "FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'D:\\\\hc\\\\userFeedback\\\\cache\\\\execution-security-high-resume-20261111\\\\evaluation\\\\uf-20261111-sec-08-pe-certificate-layout\\\\verification\\\\baseline-r1\\\\source\\\\pefile-tests\\\\tests\\\\data\\\\cmd.exe'",
+      "FileNotFoundError_in_trace": true,
+      "missing_corpus_path_in_trace": true
+    },
+    {
+      "name": "test_nt_headers_exception",
+      "message": "FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'D:\\\\hc\\\\userFeedback\\\\cache\\\\execution-security-high-resume-20261111\\\\evaluation\\\\uf-20261111-sec-08-pe-certificate-layout\\\\verification\\\\baseline-r1\\\\source\\\\pefile-tests\\\\tests\\\\data\\\\MSVBVM60.DLL'",
+      "FileNotFoundError_in_trace": true,
+      "missing_corpus_path_in_trace": true
+    },
+    {
+      "name": "test_relocated_memory_mapped_image",
+      "message": "FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'D:\\\\hc\\\\userFeedback\\\\cache\\\\execution-security-high-resume-20261111\\\\evaluation\\\\uf-20261111-sec-08-pe-certificate-layout\\\\verification\\\\baseline-r1\\\\source\\\\pefile-tests\\\\tests\\\\data\\\\MSVBVM60.DLL'",
+      "FileNotFoundError_in_trace": true,
+      "missing_corpus_path_in_trace": true
+    },
+    {
+      "name": "test_selective_loading_integrity",
+      "message": "FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'D:\\\\hc\\\\userFeedback\\\\cache\\\\execution-security-high-resume-20261111\\\\evaluation\\\\uf-20261111-sec-08-pe-certificate-layout\\\\verification\\\\baseline-r1\\\\source\\\\pefile-tests\\\\tests\\\\data\\\\MSVBVM60.DLL'",
+      "FileNotFoundError_in_trace": true,
+      "missing_corpus_path_in_trace": true
+    },
+    {
+      "name": "test_write_header_fields",
+      "message": "FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'D:\\\\hc\\\\userFeedback\\\\cache\\\\execution-security-high-resume-20261111\\\\evaluation\\\\uf-20261111-sec-08-pe-certificate-layout\\\\verification\\\\baseline-r1\\\\source\\\\pefile-tests\\\\tests\\\\data\\\\MSVBVM60.DLL'",
+      "FileNotFoundError_in_trace": true,
+      "missing_corpus_path_in_trace": true
+    }
+  ],
+  "initial_tests": [
+    {
+      "path": "tests\\export_test.py",
+      "initial_archive_sha256": "6bff0f65560ecaab9a2606a61b7f90dd20337403246543fd5c1686c5798c8758",
+      "frozen_checkout_sha256": "ec641248fd96aaafadaa64d340889ff530f5cf48f0d8d7fbd1f73654f8c78270",
+      "raw_bytes_equal": false,
+      "only_crlf_difference": true,
+      "python_ast_equal": true
+    },
+    {
+      "path": "tests\\import_test.py",
+      "initial_archive_sha256": "7b527aeb38daa3ab94a02cb0087f72cddcd6633f6f6b43dad1deba8796d93704",
+      "frozen_checkout_sha256": "290f90fcfffc053a8e22bcfad8391e52b1bf3c8fa83ea9739c414cac7380f564",
+      "raw_bytes_equal": false,
+      "only_crlf_difference": true,
+      "python_ast_equal": true
+    },
+    {
+      "path": "tests\\pefile_test.py",
+      "initial_archive_sha256": "f5ec691ffd93180b6e11c08c30384cbdda5c7ffd4b178ed182f1614cceafa88d",
+      "frozen_checkout_sha256": "3b1f8a3e87dffe6c421de4d5a70e456914b7c059c6d52cf58ed67bbc9a9cb77c",
+      "raw_bytes_equal": false,
+      "only_crlf_difference": true,
+      "python_ast_equal": true
+    },
+    {
+      "path": "tests\\peutils_test.py",
+      "initial_archive_sha256": "44a48c84c6539383a6e9aa84c2669e16a917fa822ce4d61fb83c6b514e48e121",
+      "frozen_checkout_sha256": "711261835c99e73835447d4a2ac2fbd5ed347ee16c1f9209a3ad9e928c92a888",
+      "raw_bytes_equal": false,
+      "only_crlf_difference": true,
+      "python_ast_equal": true
+    },
+    {
+      "path": "tests\\signature_matching_test.py",
+      "initial_archive_sha256": "013a96403ee7f73e78a90f064dafe83ec5c1ba92edb83aef76696f014cfa84a2",
+      "frozen_checkout_sha256": "e40984f12394494a9bef7c9945250a542cea4a87b6111c25b37272895997fdf3",
+      "raw_bytes_equal": false,
+      "only_crlf_difference": true,
+      "python_ast_equal": true
+    },
+    {
+      "path": "tests\\test_section_names.py",
+      "initial_archive_sha256": "acd57143e79d1cc290fa4d09c0670f077a43a7b5212cd38124e2359c970ac298",
+      "frozen_checkout_sha256": "10e353883efc6255fe10b70f31c6f7636def07dbda90f671ec9eea8cb4a2509a",
+      "raw_bytes_equal": false,
+      "only_crlf_difference": true,
+      "python_ast_equal": true
+    }
+  ],
+  "git_test_diff": "A\ttests/test_security_directory.py\n",
+  "source_comparison": "Raw hashes kept; CRLF-only checkout differences explicitly disclosed; AST equal. No original test edited in Git.",
+  "initial_comparison_tool_issue": "baseline-r1 verifier asserted raw source byte equality; Git archive LF vs checkout CRLF caused that assertion after tests completed. Saved logs were reused without rerunning or modifying the model.",
+  "corpus_available": false,
+  "not_a_full_corpus_pass": true
+}

@@ -1,0 +1,397 @@
+......s.F...FF...F.FFF..F..FF....F............. [ 72%]
+..................                                                       [100%]
+================================== FAILURES ===================================
+__________________________ TestPEFile.test_checksum ___________________________
+
+self = <pefile_test.TestPEFile testMethod=test_checksum>
+
+    def test_checksum(self):
+        """Verify correct calculation of checksum"""
+    
+        # Take a known good file
+        control_file = REGRESSION_TESTS_DIR / "MSVBVM60.DLL"
+>       pe = pefile.PE(control_file)
+             ^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\pefile_test.py:761: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+pefile.py:2978: in __init__
+    self.__parse__(name, data, fast_load, max_offset)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <pefile.PE object at 0x000001E5FC598E10>
+fname = WindowsPath('D:/hc/userFeedback/cache/execution-security-high-resume-20261111/evaluation/uf-20261111-sec-08-pe-certificate-layout/verification/baseline-r1/source/pefile-tests/tests/data/MSVBVM60.DLL')
+data = None, fast_load = False, max_offset = 268435456
+
+    def __parse__(self, fname, data, fast_load, max_offset):
+        """Parse a Portable Executable file.
+    
+        Loads a PE file, parsing all its structures and making them available
+        through the instance's attributes.
+        """
+    
+        if fname is not None:
+>           stat = os.stat(fname)
+                   ^^^^^^^^^^^^^^
+E           FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\verification\\baseline-r1\\source\\pefile-tests\\tests\\data\\MSVBVM60.DLL'
+
+pefile.py:3054: FileNotFoundError
+________________________ TestPEFile.test_driver_check _________________________
+
+self = <pefile_test.TestPEFile testMethod=test_driver_check>
+
+    def test_driver_check(self):
+        """Test the is_driver check"""
+    
+        # A 32 bit driver that imports DbgPrint from ntoskrnl.exe
+        control_file_pe = POCS_TESTS_DIR / "driver.sys"
+    
+>       pe_fast = pefile.PE(control_file_pe, fast_load=True)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\pefile_test.py:707: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+pefile.py:2978: in __init__
+    self.__parse__(name, data, fast_load, max_offset)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <pefile.PE object at 0x000001E5FCB32990>
+fname = WindowsPath('D:/hc/userFeedback/cache/execution-security-high-resume-20261111/evaluation/uf-20261111-sec-08-pe-certificate-layout/verification/baseline-r1/source/pefile-tests/tests/corkami/pocs/driver.sys')
+data = None, fast_load = True, max_offset = 268435456
+
+    def __parse__(self, fname, data, fast_load, max_offset):
+        """Parse a Portable Executable file.
+    
+        Loads a PE file, parsing all its structures and making them available
+        through the instance's attributes.
+        """
+    
+        if fname is not None:
+>           stat = os.stat(fname)
+                   ^^^^^^^^^^^^^^
+E           FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\verification\\baseline-r1\\source\\pefile-tests\\tests\\corkami\\pocs\\driver.sys'
+
+pefile.py:3054: FileNotFoundError
+____________________ TestPEFile.test_empty_file_exception _____________________
+
+self = <pefile_test.TestPEFile testMethod=test_empty_file_exception>
+
+    def test_empty_file_exception(self):
+        """pefile should fail parsing empty files."""
+    
+        # Take a known good file
+        control_file = REGRESSION_TESTS_DIR / "empty_file"
+>       self.assertRaises(pefile.PEFormatError, pefile.PE, control_file)
+
+tests\pefile_test.py:337: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+pefile.py:2978: in __init__
+    self.__parse__(name, data, fast_load, max_offset)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def __parse__(self, fname, data, fast_load, max_offset):
+        """Parse a Portable Executable file.
+    
+        Loads a PE file, parsing all its structures and making them available
+        through the instance's attributes.
+        """
+    
+        if fname is not None:
+>           stat = os.stat(fname)
+                   ^^^^^^^^^^^^^^
+E           FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\verification\\baseline-r1\\source\\pefile-tests\\tests\\data\\empty_file'
+
+pefile.py:3054: FileNotFoundError
+___________________________ TestPEFile.test_exphash ___________________________
+
+self = <pefile_test.TestPEFile testMethod=test_exphash>
+
+    def test_exphash(self):
+        """Test exphash values."""
+    
+        self.assertEqual(
+>           pefile.PE(REGRESSION_TESTS_DIR / "mfc40.dll").get_exphash(),
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            "62d630f6941ad56df3b0a079873a82bc",
+        )
+
+tests\pefile_test.py:217: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+pefile.py:2978: in __init__
+    self.__parse__(name, data, fast_load, max_offset)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <pefile.PE object at 0x000001E5FCB339D0>
+fname = WindowsPath('D:/hc/userFeedback/cache/execution-security-high-resume-20261111/evaluation/uf-20261111-sec-08-pe-certificate-layout/verification/baseline-r1/source/pefile-tests/tests/data/mfc40.dll')
+data = None, fast_load = False, max_offset = 268435456
+
+    def __parse__(self, fname, data, fast_load, max_offset):
+        """Parse a Portable Executable file.
+    
+        Loads a PE file, parsing all its structures and making them available
+        through the instance's attributes.
+        """
+    
+        if fname is not None:
+>           stat = os.stat(fname)
+                   ^^^^^^^^^^^^^^
+E           FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\verification\\baseline-r1\\source\\pefile-tests\\tests\\data\\mfc40.dll'
+
+pefile.py:3054: FileNotFoundError
+____________________ TestPEFile.test_get_rich_header_hash _____________________
+
+self = <pefile_test.TestPEFile testMethod=test_get_rich_header_hash>
+
+    def test_get_rich_header_hash(self):
+        """Verify the RICH_HEADER hashes."""
+    
+        control_file = REGRESSION_TESTS_DIR / "kernel32.dll"
+>       pe = pefile.PE(control_file)
+             ^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\pefile_test.py:138: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+pefile.py:2978: in __init__
+    self.__parse__(name, data, fast_load, max_offset)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <pefile.PE object at 0x000001E5FCB33C50>
+fname = WindowsPath('D:/hc/userFeedback/cache/execution-security-high-resume-20261111/evaluation/uf-20261111-sec-08-pe-certificate-layout/verification/baseline-r1/source/pefile-tests/tests/data/kernel32.dll')
+data = None, fast_load = False, max_offset = 268435456
+
+    def __parse__(self, fname, data, fast_load, max_offset):
+        """Parse a Portable Executable file.
+    
+        Loads a PE file, parsing all its structures and making them available
+        through the instance's attributes.
+        """
+    
+        if fname is not None:
+>           stat = os.stat(fname)
+                   ^^^^^^^^^^^^^^
+E           FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\verification\\baseline-r1\\source\\pefile-tests\\tests\\data\\kernel32.dll'
+
+pefile.py:3054: FileNotFoundError
+___________________________ TestPEFile.test_imphash ___________________________
+
+self = <pefile_test.TestPEFile testMethod=test_imphash>
+
+    def test_imphash(self):
+        """Test imphash values."""
+    
+        self.assertEqual(
+>           pefile.PE(REGRESSION_TESTS_DIR / "mfc40.dll").get_imphash(),
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            "b0f969ff16372d95ef57f05aa8f69409",
+        )
+
+tests\pefile_test.py:191: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+pefile.py:2978: in __init__
+    self.__parse__(name, data, fast_load, max_offset)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <pefile.PE object at 0x000001E5FCB30190>
+fname = WindowsPath('D:/hc/userFeedback/cache/execution-security-high-resume-20261111/evaluation/uf-20261111-sec-08-pe-certificate-layout/verification/baseline-r1/source/pefile-tests/tests/data/mfc40.dll')
+data = None, fast_load = False, max_offset = 268435456
+
+    def __parse__(self, fname, data, fast_load, max_offset):
+        """Parse a Portable Executable file.
+    
+        Loads a PE file, parsing all its structures and making them available
+        through the instance's attributes.
+        """
+    
+        if fname is not None:
+>           stat = os.stat(fname)
+                   ^^^^^^^^^^^^^^
+E           FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\verification\\baseline-r1\\source\\pefile-tests\\tests\\data\\mfc40.dll'
+
+pefile.py:3054: FileNotFoundError
+______________ TestPEFile.test_is_driver_and_is_exe_return_bool _______________
+
+self = <pefile_test.TestPEFile testMethod=test_is_driver_and_is_exe_return_bool>
+
+    def test_is_driver_and_is_exe_return_bool(self):
+        """Test is_driver and is_exe return False, not set() or 0"""
+    
+>       pe = pefile.PE(REGRESSION_TESTS_DIR / "cmd.exe")
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\pefile_test.py:747: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+pefile.py:2978: in __init__
+    self.__parse__(name, data, fast_load, max_offset)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <pefile.PE object at 0x000001E5FCB334D0>
+fname = WindowsPath('D:/hc/userFeedback/cache/execution-security-high-resume-20261111/evaluation/uf-20261111-sec-08-pe-certificate-layout/verification/baseline-r1/source/pefile-tests/tests/data/cmd.exe')
+data = None, fast_load = False, max_offset = 268435456
+
+    def __parse__(self, fname, data, fast_load, max_offset):
+        """Parse a Portable Executable file.
+    
+        Loads a PE file, parsing all its structures and making them available
+        through the instance's attributes.
+        """
+    
+        if fname is not None:
+>           stat = os.stat(fname)
+                   ^^^^^^^^^^^^^^
+E           FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\verification\\baseline-r1\\source\\pefile-tests\\tests\\data\\cmd.exe'
+
+pefile.py:3054: FileNotFoundError
+____________________ TestPEFile.test_nt_headers_exception _____________________
+
+self = <pefile_test.TestPEFile testMethod=test_nt_headers_exception>
+
+    def test_nt_headers_exception(self):
+        """pefile should fail parsing invalid data (missing NT headers)"""
+    
+        # Take a known good file.
+        control_file = REGRESSION_TESTS_DIR / "MSVBVM60.DLL"
+>       pe = pefile.PE(control_file, fast_load=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\pefile_test.py:300: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+pefile.py:2978: in __init__
+    self.__parse__(name, data, fast_load, max_offset)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <pefile.PE object at 0x000001E5FC914050>
+fname = WindowsPath('D:/hc/userFeedback/cache/execution-security-high-resume-20261111/evaluation/uf-20261111-sec-08-pe-certificate-layout/verification/baseline-r1/source/pefile-tests/tests/data/MSVBVM60.DLL')
+data = None, fast_load = True, max_offset = 268435456
+
+    def __parse__(self, fname, data, fast_load, max_offset):
+        """Parse a Portable Executable file.
+    
+        Loads a PE file, parsing all its structures and making them available
+        through the instance's attributes.
+        """
+    
+        if fname is not None:
+>           stat = os.stat(fname)
+                   ^^^^^^^^^^^^^^
+E           FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\verification\\baseline-r1\\source\\pefile-tests\\tests\\data\\MSVBVM60.DLL'
+
+pefile.py:3054: FileNotFoundError
+________________ TestPEFile.test_relocated_memory_mapped_image ________________
+
+self = <pefile_test.TestPEFile testMethod=test_relocated_memory_mapped_image>
+
+    def test_relocated_memory_mapped_image(self):
+        """Test different rebasing methods produce the same image"""
+    
+        # Take a known good file
+        control_file = REGRESSION_TESTS_DIR / "MSVBVM60.DLL"
+>       pe = pefile.PE(control_file)
+             ^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\pefile_test.py:447: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+pefile.py:2978: in __init__
+    self.__parse__(name, data, fast_load, max_offset)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <pefile.PE object at 0x000001E5FC914410>
+fname = WindowsPath('D:/hc/userFeedback/cache/execution-security-high-resume-20261111/evaluation/uf-20261111-sec-08-pe-certificate-layout/verification/baseline-r1/source/pefile-tests/tests/data/MSVBVM60.DLL')
+data = None, fast_load = False, max_offset = 268435456
+
+    def __parse__(self, fname, data, fast_load, max_offset):
+        """Parse a Portable Executable file.
+    
+        Loads a PE file, parsing all its structures and making them available
+        through the instance's attributes.
+        """
+    
+        if fname is not None:
+>           stat = os.stat(fname)
+                   ^^^^^^^^^^^^^^
+E           FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\verification\\baseline-r1\\source\\pefile-tests\\tests\\data\\MSVBVM60.DLL'
+
+pefile.py:3054: FileNotFoundError
+_________________ TestPEFile.test_selective_loading_integrity _________________
+
+self = <pefile_test.TestPEFile testMethod=test_selective_loading_integrity>
+
+    def test_selective_loading_integrity(self):
+        """Verify integrity of loading the separate elements of the file as
+        opposed to do a single pass.
+        """
+    
+        control_file = REGRESSION_TESTS_DIR / "MSVBVM60.DLL"
+>       pe = pefile.PE(control_file, fast_load=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\pefile_test.py:174: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+pefile.py:2978: in __init__
+    self.__parse__(name, data, fast_load, max_offset)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <pefile.PE object at 0x000001E5FC747390>
+fname = WindowsPath('D:/hc/userFeedback/cache/execution-security-high-resume-20261111/evaluation/uf-20261111-sec-08-pe-certificate-layout/verification/baseline-r1/source/pefile-tests/tests/data/MSVBVM60.DLL')
+data = None, fast_load = True, max_offset = 268435456
+
+    def __parse__(self, fname, data, fast_load, max_offset):
+        """Parse a Portable Executable file.
+    
+        Loads a PE file, parsing all its structures and making them available
+        through the instance's attributes.
+        """
+    
+        if fname is not None:
+>           stat = os.stat(fname)
+                   ^^^^^^^^^^^^^^
+E           FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\verification\\baseline-r1\\source\\pefile-tests\\tests\\data\\MSVBVM60.DLL'
+
+pefile.py:3054: FileNotFoundError
+_____________________ TestPEFile.test_write_header_fields _____________________
+
+self = <pefile_test.TestPEFile testMethod=test_write_header_fields>
+
+    def test_write_header_fields(self):
+        """Verify correct field data modification."""
+    
+        # Test version information writing
+        control_file = REGRESSION_TESTS_DIR / "MSVBVM60.DLL"
+>       pe = pefile.PE(control_file, fast_load=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\pefile_test.py:243: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+pefile.py:2978: in __init__
+    self.__parse__(name, data, fast_load, max_offset)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <pefile.PE object at 0x000001E5FC914B90>
+fname = WindowsPath('D:/hc/userFeedback/cache/execution-security-high-resume-20261111/evaluation/uf-20261111-sec-08-pe-certificate-layout/verification/baseline-r1/source/pefile-tests/tests/data/MSVBVM60.DLL')
+data = None, fast_load = True, max_offset = 268435456
+
+    def __parse__(self, fname, data, fast_load, max_offset):
+        """Parse a Portable Executable file.
+    
+        Loads a PE file, parsing all its structures and making them available
+        through the instance's attributes.
+        """
+    
+        if fname is not None:
+>           stat = os.stat(fname)
+                   ^^^^^^^^^^^^^^
+E           FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\verification\\baseline-r1\\source\\pefile-tests\\tests\\data\\MSVBVM60.DLL'
+
+pefile.py:3054: FileNotFoundError
+=========================== short test summary info ===========================
+FAILED tests/pefile_test.py::TestPEFile::test_checksum - FileNotFoundError: [...
+FAILED tests/pefile_test.py::TestPEFile::test_driver_check - FileNotFoundErro...
+FAILED tests/pefile_test.py::TestPEFile::test_empty_file_exception - FileNotF...
+FAILED tests/pefile_test.py::TestPEFile::test_exphash - FileNotFoundError: [W...
+FAILED tests/pefile_test.py::TestPEFile::test_get_rich_header_hash - FileNotF...
+FAILED tests/pefile_test.py::TestPEFile::test_imphash - FileNotFoundError: [W...
+FAILED tests/pefile_test.py::TestPEFile::test_is_driver_and_is_exe_return_bool
+FAILED tests/pefile_test.py::TestPEFile::test_nt_headers_exception - FileNotF...
+FAILED tests/pefile_test.py::TestPEFile::test_relocated_memory_mapped_image
+FAILED tests/pefile_test.py::TestPEFile::test_selective_loading_integrity - F...
+FAILED tests/pefile_test.py::TestPEFile::test_write_header_fields - FileNotFo...
+11 failed, 53 passed, 1 skipped, 1 warning, 529 subtests passed in 4.68s

@@ -1,0 +1,230 @@
+{
+  "time": "2026-11-12T03:47:05+08:00",
+  "reviewed": true,
+  "frozen_commit": "efb1cb64c1740b9bd564bd83be2d93dbf0ff2c54",
+  "files": [
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\Feedback.md",
+      "path": "Feedback.md",
+      "sha256": "48479422fb5d43349e55f987b50629bb25cfdd590f44e3f9e15132c9431e6b40"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\evidence-map.json",
+      "path": "evidence-map.json",
+      "sha256": "e94333d305c8da2a40d1ea8ac0b6db0f3c2c8174a91bdeb0d2735982a6a70b02"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\environment-reviewed.json",
+      "path": "environment-reviewed.json",
+      "sha256": "da0ad266a1af7c9685b650e285401d56d2ff2870137086aa1be7608e3cf2d621"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\freeze-audit.json",
+      "path": "freeze-audit.json",
+      "sha256": "b3b43aac582ed051fa327c1c3307c2ddd87684a35a9b48eba9a162d9701278f6"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\snapshot-proof.json",
+      "path": "snapshot-proof.json",
+      "sha256": "b015ff943bdfa57baf900cfdc6a81acb7149e21296fb282151663d6a9e19afc0"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\verification\\regression-r1\\regression-command.json",
+      "path": "verification/regression-r1/regression-command.json",
+      "sha256": "ee9163726dae658f539a8aacc7a9de9063f9b6c4bc46e2eefb9db75c1bcf3461"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\verification\\regression-r1\\regression.log",
+      "path": "verification/regression-r1/regression.log",
+      "sha256": "d36d3e0998227206d1a8393c865ac6818d478eb921170b9808e9e0b335889b03"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\verification\\regression-r1\\regression.xml",
+      "path": "verification/regression-r1/regression.xml",
+      "sha256": "9a5e4a01c6db1848eb10aa97a407ca24237eba2396026dc96b5d47bb8720e6c4"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\verification\\regression-r1\\test-results.json",
+      "path": "verification/regression-r1/test-results.json",
+      "sha256": "52776dfae637ac8c5a32c2955fb78ccdcfe51f1899a00be9a118c7c4016565f0"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\verification\\acceptance-r1\\acceptance-command.json",
+      "path": "verification/acceptance-r1/acceptance-command.json",
+      "sha256": "1afb7560b41b8076766fb49f6a03ca421d0375ae6899334bc678d970a2a854c9"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\verification\\acceptance-r1\\acceptance-support.json",
+      "path": "verification/acceptance-r1/acceptance-support.json",
+      "sha256": "a39dd6d9429fc80c9dbb6579c7d0eac6dfc85f094be86fb4ef1c39c96630c50f"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\verification\\acceptance-r1\\acceptance.log",
+      "path": "verification/acceptance-r1/acceptance.log",
+      "sha256": "3040016c7da15391631ca199c176155416b37ee4e2716d6f43d2259c038dcf3c"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\verification\\acceptance-r1\\acceptance.xml",
+      "path": "verification/acceptance-r1/acceptance.xml",
+      "sha256": "88c5606460c011a31dafb2eb43a9acf8f6d2fa742a562f0c654d1d0b8dadfa5f"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\verification\\acceptance-r1\\pe_adapter.py",
+      "path": "verification/acceptance-r1/pe_adapter.py",
+      "sha256": "b6341d760cdcb62917d685d74b00fcd57b2bed0e222bdaa534d703342435df36"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\verification\\acceptance-r1\\pe_fixtures.py",
+      "path": "verification/acceptance-r1/pe_fixtures.py",
+      "sha256": "c6be50d882389ff34174b3fae666c80da0066b95f0d8269bd1d5a12340cd9b97"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\verification\\acceptance-r1\\test-results.json",
+      "path": "verification/acceptance-r1/test-results.json",
+      "sha256": "83b9f3fbabc67ffb742091a88268b36900fadf029e6145cbaf63e4cad8baf725"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\verification\\acceptance-r1\\test_acceptance.py",
+      "path": "verification/acceptance-r1/test_acceptance.py",
+      "sha256": "bea561e6382a3581cab9482e10961b4d509e472c3df2374007ee580ce80a7c26"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\verification\\controls-r1\\acceptance-command.json",
+      "path": "verification/controls-r1/acceptance-command.json",
+      "sha256": "63e8876eac290eda83df24b093473d629117925e6a14b83af09babab3e5b4f91"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\verification\\controls-r1\\acceptance-support.json",
+      "path": "verification/controls-r1/acceptance-support.json",
+      "sha256": "a39dd6d9429fc80c9dbb6579c7d0eac6dfc85f094be86fb4ef1c39c96630c50f"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\verification\\controls-r1\\acceptance.log",
+      "path": "verification/controls-r1/acceptance.log",
+      "sha256": "31ce85cfa45d611fea9170399c33f62fb31153e508f7edc6891c673e0647cd85"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\verification\\controls-r1\\acceptance.xml",
+      "path": "verification/controls-r1/acceptance.xml",
+      "sha256": "7ef11665162f9021c53e562d034b4f1457aa37d6bd1bb652902761e66335198a"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\verification\\controls-r1\\pe_adapter.py",
+      "path": "verification/controls-r1/pe_adapter.py",
+      "sha256": "b6341d760cdcb62917d685d74b00fcd57b2bed0e222bdaa534d703342435df36"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\verification\\controls-r1\\pe_fixtures.py",
+      "path": "verification/controls-r1/pe_fixtures.py",
+      "sha256": "c6be50d882389ff34174b3fae666c80da0066b95f0d8269bd1d5a12340cd9b97"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\verification\\controls-r1\\test-results.json",
+      "path": "verification/controls-r1/test-results.json",
+      "sha256": "26ae9c98be086864c1e843fa16c53632d5d8e9057f9c9f36d69e7200329b62c0"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\verification\\controls-r1\\test_acceptance.py",
+      "path": "verification/controls-r1/test_acceptance.py",
+      "sha256": "673e6d504ade105a91b3bfdb4274edbdc0c7a2fd9223bec042958839ee8f3333"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\verification\\baseline-r1\\baseline-command.json",
+      "path": "verification/baseline-r1/baseline-command.json",
+      "sha256": "b2f4a251945703834e1580223fe1661938c882bc378270001dccf533a8fb0876"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\verification\\baseline-r1\\baseline.log",
+      "path": "verification/baseline-r1/baseline.log",
+      "sha256": "474641d86ace3d1290f91b3bdd4413dbdd25d22e53fd54385d0477be945d6b5f"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\verification\\baseline-r1\\baseline.xml",
+      "path": "verification/baseline-r1/baseline.xml",
+      "sha256": "8962e5f831103ad1ec9c4327f5b086bcf1d31f1e48223e6e80894cb5cbea6e20"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\verification\\baseline-r1\\verify_initial_source.py",
+      "path": "verification/baseline-r1/verify_initial_source.py",
+      "sha256": "83e6399f3f39ba1398e84e061c14461b43e7c9f6cebed2411334de2cdf7a3557"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\verification\\baseline-comparison-r2\\baseline-comparison.json",
+      "path": "verification/baseline-comparison-r2/baseline-comparison.json",
+      "sha256": "cb69cae8828b955e1013bcb85a4bd7f853a67e9d4025b0244052c04a2f7d4d85"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\verification\\baseline-comparison-r2\\classify_pe_baseline.py",
+      "path": "verification/baseline-comparison-r2/classify_pe_baseline.py",
+      "sha256": "c4b4a36972370531e3592bc38182af1400c68704c30fa1719550963a9b334ccb"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\verification\\observations-r1\\inspect_certificate_layout.py",
+      "path": "verification/observations-r1/inspect_certificate_layout.py",
+      "sha256": "0ee2677ffdad2947fc026a4ded7b1fa87d091ac84d732e0494130981daee6e1b"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\verification\\observations-r1\\observations-command.json",
+      "path": "verification/observations-r1/observations-command.json",
+      "sha256": "4eae23b5ab5d9da1310614c794258be84bbc83f91ee80c35877f97dcd3407c99"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\verification\\observations-r1\\observations.log",
+      "path": "verification/observations-r1/observations.log",
+      "sha256": "3dc790a574f0d395e39990c5812f03f8f67e59c07f0ce8408b2bf1a6ce4bbab2"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\verification\\observations-r1\\pe_fixtures.py",
+      "path": "verification/observations-r1/pe_fixtures.py",
+      "sha256": "c6be50d882389ff34174b3fae666c80da0066b95f0d8269bd1d5a12340cd9b97"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\verification\\format-reference-r1\\initial-fixture-revision.json",
+      "path": "verification/format-reference-r1/initial-fixture-revision.json",
+      "sha256": "7d400f80b3ab9afc12aba0c67800517924dc5befccaebb7f1e892b4b08001fec"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\verification\\format-reference-r1\\public-format-excerpt.md",
+      "path": "verification/format-reference-r1/public-format-excerpt.md",
+      "sha256": "869830e5ed53787484ea88a694fb4f7c85215c4c1a8c9273a06af7eed05fc874"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\verification\\format-reference-r1\\source.json",
+      "path": "verification/format-reference-r1/source.json",
+      "sha256": "d2dea25dd1f37ad2473e07088f66cd9c2dcd56933fde290a19cd6e81214a1f68"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\recording\\r1\\actual-commands.json",
+      "path": "recording/actual-commands.json",
+      "sha256": "f8215c2f035caff1436ff0ce89d41f501eaae943ece3c74e18876810cf58c4e8"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\recording\\r1\\content-review.json",
+      "path": "recording/content-review.json",
+      "sha256": "714802b78012fcb31cb1352511e3f7ef6274879569246d4e6aa3cc601a44eba5"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\recording\\r1\\recording-status.json",
+      "path": "recording/recording-status.json",
+      "sha256": "5ceffef6a4bf675dff8815455950fb78a35cacf6c7c3f30958443c8858fcb27a"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\recording\\r1\\full-stream-check.json",
+      "path": "recording/full-stream-check.json",
+      "sha256": "705f7369c2190e26ccfc769f0975428e947d5080adb1703976c06296257f6105"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\execution-security-high-resume-20261111\\evaluation\\uf-20261111-sec-08-pe-certificate-layout\\recording\\r1\\media-metadata.log",
+      "path": "recording/media-metadata.log",
+      "sha256": "243248362a779e394acfe92f999e4dab07a0d3aaf8d1fce2230a49e6daf88129"
+    }
+  ],
+  "reproduction_readme": "独立验收说明\n\n冻结提交：https://github.com/9873199/pefile-certificate-audit/commit/efb1cb64c1740b9bd564bd83be2d93dbf0ff2c54\n实际解释器：3.14.3 (tags/v3.14.3:323c59a, Feb  3 2026, 16:04:56) [MSC v.1944 64 bit (AMD64)]\n\n从冻结提交检出源码，用environment-reviewed.json列出的真实Python和依赖运行各verification目录的*-command.json；pe_adapter.py只映射原生字段和异常类型，未补结构校验。正常夹具的dwLength包含零填充，依据format-reference-r1记录的微软原文；不以有争议的未填充长度拒绝扣分。记录数上限用测试里的monkeypatch显式降低模块常量，库没有max_records公开参数，不要求该参数。主验收23项和controls7项分别保存；observations-r1直接输出原生对象，退出0仅表示诊断执行完，不能当成两个问题通过。baseline-r1把初始Git提交archive到独立缓存目录，53通过/11缺语料失败/1跳过/529子测试通过；初始比较器因LF/CRLF断言停止，baseline-comparison-r2明确记录双方原始Hash、AST及Git对照，不改原日志。完整最终回归为102通过/11缺语料失败/1跳过/529子测试通过。测试不执行PE文件、不联网校验证书。录屏为另写的验证控制台，不是模型生成的业务UI。\n\n每组目录内的 *-command.json 保留真实参数、工作目录、PYTHONPATH、退出码和原始日志位置；test-results.json 与 JUnit XML 保留完整成绩。跨机器运行时把这些绝对路径映射到同一冻结 checkout 和自己的缓存目录，所有 --basetemp、XML 和构建输出均放在缓存里。依赖版本见 environment-reviewed.json。\n这些材料在模型单轮结束后生成，与原轨内测试分开，不代表项目方质检通过。原轨和视频只放各自的飞书附件。\n",
+  "excluded_engineering_attempts": [
+    {
+      "path": "verification/baseline-r1",
+      "scope": "comparison script after actual baseline tests",
+      "reason": "raw-byte source equality assertion failed on Git archive LF vs checkout CRLF; original outputs kept. baseline-comparison-r2 proves original test ASTs equal and Git tests unchanged; no model retry or source repair."
+    }
+  ]
+}

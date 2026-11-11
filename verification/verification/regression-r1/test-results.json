@@ -1,0 +1,60 @@
+{
+  "time": "2026-11-12T03:37:24+08:00",
+  "run_id": "uf-20261111-sec-08-pe-certificate-layout",
+  "checks": {
+    "regression": {
+      "tests": null,
+      "passed": 102,
+      "failures": 11,
+      "errors": 0,
+      "skipped": 1,
+      "failure_cases": [
+        "test_checksum",
+        "test_driver_check",
+        "test_empty_file_exception",
+        "test_exphash",
+        "test_get_rich_header_hash",
+        "test_imphash",
+        "test_is_driver_and_is_exe_return_bool",
+        "test_nt_headers_exception",
+        "test_relocated_memory_mapped_image",
+        "test_selective_loading_integrity",
+        "test_write_header_fields"
+      ],
+      "exit_code": 1,
+      "xfailed": 0,
+      "xpassed": 0,
+      "pytest_terminal_summary": {
+        "failed": 11,
+        "passed": 102,
+        "skipped": 1,
+        "subtests passed": 529
+      },
+      "junit_raw_counts": {
+        "tests": 114,
+        "passed": 102,
+        "failures": 11,
+        "errors": 0,
+        "skipped": 1,
+        "failure_cases": [
+          "test_checksum",
+          "test_driver_check",
+          "test_empty_file_exception",
+          "test_exphash",
+          "test_get_rich_header_hash",
+          "test_imphash",
+          "test_is_driver_and_is_exe_return_bool",
+          "test_nt_headers_exception",
+          "test_relocated_memory_mapped_image",
+          "test_selective_loading_integrity",
+          "test_write_header_fields"
+        ],
+        "exit_code": 1
+      },
+      "count_source": "pytest terminal summary; XML kept unchanged"
+    }
+  },
+  "artifact_hashes_unchanged": true,
+  "score": null,
+  "feedback": "PENDING_SEMANTIC_REVIEW"
+}
